@@ -11,7 +11,7 @@ import SwiftUI
 struct notusApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NoteView()
         }
     }
 }
