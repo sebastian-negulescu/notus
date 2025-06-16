@@ -7,10 +7,13 @@
 
 import SwiftUI
 
-struct NoteView: View {
+struct FileCabinetView: View {
+    var on_file_select: () -> Void
+    
     @State private var files: [URL] = []
     
     var columns = [
+            GridItem(.flexible(), spacing: 20),
             GridItem(.flexible(), spacing: 20),
             GridItem(.flexible(), spacing: 20),
             GridItem(.flexible(), spacing: 20)
@@ -28,6 +31,10 @@ struct NoteView: View {
                         Text(file.lastPathComponent)
                     }
                     .padding()
+                    .onTapGesture {
+                        // TODO: select file
+                        
+                    }
                 }
             }
         }
@@ -35,5 +42,5 @@ struct NoteView: View {
 }
 
 #Preview {
-    NoteView()
+    FileCabinetView(on_file_select: {_ = Screen.Desk})
 }
