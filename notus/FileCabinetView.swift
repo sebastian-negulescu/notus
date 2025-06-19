@@ -37,6 +37,9 @@ struct FileCabinetView: View {
                     }
                 }
             }
+            Button(action: on_file_select) {
+                Text("pull out file")
+            }
         }
     }
 }
