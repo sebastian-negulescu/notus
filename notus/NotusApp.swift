@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct NotusApp: App {
-    @State private var screen: Screen = Screen.FileCabinet
+    @State private var screen: Screen = Screen.Desk
     
     var body: some Scene {
         WindowGroup {

@@ -9,25 +9,27 @@ import SwiftUI
 import PencilKit
 
 struct NoteView: UIViewRepresentable {
+    let tool_picker = PKToolPicker()
     
     func makeUIView(context: Context) -> UIViewType {
-        let note_canvas = PKCanvasView()
-        note_canvas.drawingPolicy = .pencilOnly
-        note_canvas.tool = PKInkingTool(.pen, color: .black, width: 10)
+        let canvas = PKCanvasView()
+        canvas.drawingPolicy = .pencilOnly
+        canvas.tool = PKInkingTool(.pen, color: .black, width: 10)
         
-        let tool_picker = PKToolPicker()
-        tool_picker.addObserver(note_canvas)
-        tool_picker.setVisible(true, forFirstResponder: note_canvas)
+        tool_picker.addObserver(canvas)
+        tool_picker.setVisible(true, forFirstResponder: canvas)
         
-        return note_canvas
+        canvas.becomeFirstResponder()
+        
+        return canvas
     }
     
     func updateUIView(_ type: UIViewType, context: Context) {
-        
+        // TODO: mark drawing as modified
     }
     
-    static func dismantleUIView(_ uiView: PKCanvasView, coordinator: ()) {
-        
+    static func dismantleUIView(_ uiView: UIViewType, coordinator: ()) {
+        // TODO: save drawing
     }
     
     typealias UIViewType = PKCanvasView
@@ -36,8 +38,19 @@ struct NoteView: UIViewRepresentable {
 struct DeskView: View {
     var on_file_away: () -> Void
     
+    func file_away() -> Void {
+        
+    }
+    
     var body: some View {
-        NoteView()
+        ZStack(alignment: .topTrailing) {
+            NoteView()
+            Button(action: file_away) {
+                Text("file away")
+            }
+            .buttonStyle(.bordered)
+            .padding(.trailing, 10)
+        }
     }
 }
 
