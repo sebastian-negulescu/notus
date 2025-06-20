@@ -9,8 +9,15 @@ import SwiftUI
 
 struct FileCabinetView: View {
     var on_file_select: () -> Void
+    var file_cabinet: FileCabinet
     
     @State private var files: [URL] = []
+    @State private var path: [String] = []
+    
+    func test_new_file() -> Void {
+        file_cabinet.new_item(path: path, name: "test", item_type: CabinetItems.NotePad)
+        on_file_select()
+    }
     
     var columns = [
             GridItem(.flexible(), spacing: 20),
@@ -20,6 +27,15 @@ struct FileCabinetView: View {
         ]
     
     var body: some View {
+        HStack {
+            Text(path.joined(separator:"/"))
+            Button(action: {}) {
+                Text("preferences")
+            }
+            Button(action: test_new_file) {
+                Text("new")
+            }
+        }
         ScrollView {
             LazyVGrid(columns: columns, spacing: 20) {
                 ForEach(files, id: \.self) { file in
@@ -36,9 +52,6 @@ struct FileCabinetView: View {
                         
                     }
                 }
-            }
-            Button(action: on_file_select) {
-                Text("pull out file")
             }
         }
     }

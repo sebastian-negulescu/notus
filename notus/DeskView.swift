@@ -42,12 +42,12 @@ struct NoteView: UIViewRepresentable {
 struct DeskView: View {
     var on_file_away: () -> Void
     
-    func file_away() -> Void {
+    private func file_away() -> Void {
         note.setToolPickerVisibility(visible: false)
         on_file_away()
     }
     
-    let note = NoteView()
+    private let note = NoteView()
     
     var body: some View {
         ZStack(alignment: .topTrailing) {
