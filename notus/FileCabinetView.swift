@@ -8,14 +8,12 @@
 import SwiftUI
 
 struct FileCabinetView: View {
-    var on_file_select: () -> Void
     var file_cabinet: FileCabinet
-    
-    @State private var files: [URL] = []
-    @State private var path: [String] = []
+    var on_file_select: () -> Void
     
     func test_new_file() -> Void {
-        file_cabinet.new_item(path: path, name: "test", item_type: CabinetItems.NotePad)
+        file_cabinet.new_item(name: "test", item_type: CabinetItems.NotePad)
+        file_cabinet.select_item(name:"test")
         on_file_select()
     }
     
@@ -28,7 +26,7 @@ struct FileCabinetView: View {
     
     var body: some View {
         HStack {
-            Text(path.joined(separator:"/"))
+            Text("/test/path")
             Button(action: {}) {
                 Text("preferences")
             }
@@ -36,6 +34,7 @@ struct FileCabinetView: View {
                 Text("new")
             }
         }
+        /*
         ScrollView {
             LazyVGrid(columns: columns, spacing: 20) {
                 ForEach(files, id: \.self) { file in
@@ -54,9 +53,10 @@ struct FileCabinetView: View {
                 }
             }
         }
+         */
     }
 }
 
 #Preview {
-    FileCabinetView(on_file_select: {_ = Screen.Desk})
+    FileCabinetView(file_cabinet: FileCabinet(), on_file_select: {_ = Screen.Desk})
 }

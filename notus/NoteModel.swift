@@ -14,7 +14,7 @@ enum CabinetItems {
     case NotePad
 }
 
-struct CabinetItem {
+class CabinetItem {
     var item_type: CabinetItems
     var note_book: NoteBook?
     var note_pad: NotePad?
@@ -29,6 +29,10 @@ struct CabinetItem {
         case .NoteBook:
             return note_book!.name
         }
+    }
+    
+    init(item_type: CabinetItems) {
+        self.item_type = item_type
     }
 }
 
@@ -55,54 +59,60 @@ class Folder {
         self.name = name
         self.notes = notes
     }
+    
+    static func name_exists(folder: Folder, name: String) -> Bool {
+        for note in folder.notes {
+            if note.name() == name {
+                return true
+            }
+        }
+        return false
+    }
 }
 
 class FileCabinet {
     var root: Folder = Folder(name: "")
     
-    private static func get_path_folder(base: Folder, path: [String]) -> Folder? {
-        var folder = base
-        for part in path {
-            var found_part = false
-            for note in folder.notes {
-                if note.name() == part {
-                    if part != path.last && note.item_type != .Folder {
-                        // we match with a non-folder and it's not the end of our path
-                        return nil
-                    }
-                    
-                    if note.item_type == .Folder {
-                        folder = note.folder!
-                        found_part = true
-                    }
-                    
-                    break
-                }
-            }
-            if !found_part {
-                return nil
-            }
-        }
-        
-        return folder
+    private var current_directory: Folder
+    var current_note: CabinetItem? = nil
+    
+    init() {
+        current_directory = root
     }
     
-    func new_item(path: [String], name: String, item_type: CabinetItems) -> Bool {
-        let maybe_folder = FileCabinet.get_path_folder(base: root, path: path)
-        if let folder = maybe_folder {
-            var item = CabinetItem(item_type: item_type)
-            switch item_type {
-            case .Folder:
-                item.folder = Folder(name: name, notes: [])
-            case .NotePad:
-                item.note_pad = NotePad(name: name, page: PKDrawingReference())
-            case .NoteBook:
-                item.note_book = NoteBook(name: name, pages: [PKDrawingReference()])
+    func select_item(name: String) -> CabinetItem {
+        assert(Folder.name_exists(folder: current_directory, name: name))
+        
+        for cabinet_item in current_directory.notes {
+            if cabinet_item.name() == name {
+                switch cabinet_item.item_type {
+                case .Folder:
+                    current_directory = cabinet_item.folder!
+                case .NoteBook, .NotePad:
+                    current_note = cabinet_item
+                }
+                return cabinet_item
             }
-            folder.notes.append(item)
-            return true
         }
         
-        return false
+        assert(false)
+    }
+    
+    func new_item(name: String, item_type: CabinetItems) -> Bool {
+        var item = CabinetItem(item_type: item_type)
+        switch item_type {
+        case .Folder:
+            item.folder = Folder(name: name, notes: [])
+        case .NotePad:
+            item.note_pad = NotePad(name: name, page: PKDrawingReference())
+        case .NoteBook:
+            item.note_book = NoteBook(name: name, pages: [PKDrawingReference()])
+        }
+        
+        if Folder.name_exists(folder: current_directory, name: name) {
+            return false
+        }
+        current_directory.notes.append(item)
+        return true
     }
 }

@@ -40,6 +40,7 @@ struct NoteView: UIViewRepresentable {
 }
 
 struct DeskView: View {
+    var file_cabinet: FileCabinet
     var on_file_away: () -> Void
     
     private func file_away() -> Void {
@@ -62,5 +63,5 @@ struct DeskView: View {
 }
 
 #Preview {
-    DeskView(on_file_away: {_ = Screen.FileCabinet})
+    DeskView(file_cabinet: FileCabinet(), on_file_away: {_ = Screen.FileCabinet})
 }

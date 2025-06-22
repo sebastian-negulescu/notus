@@ -17,9 +17,9 @@ struct NotusApp: App {
         WindowGroup {
             switch screen {
             case .FileCabinet:
-                FileCabinetView(on_file_select: {screen = .Desk}, file_cabinet: file_cabinet)
+                FileCabinetView(file_cabinet: file_cabinet, on_file_select: {screen = .Desk})
             case .Desk:
-                DeskView(on_file_away: {screen = .FileCabinet})
+                DeskView(file_cabinet: file_cabinet, on_file_away: {screen = .FileCabinet})
             }
         }
     }
