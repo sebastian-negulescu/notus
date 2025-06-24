@@ -34,26 +34,25 @@ struct FileCabinetView: View {
                 Text("new")
             }
         }
-        /*
         ScrollView {
             LazyVGrid(columns: columns, spacing: 20) {
-                ForEach(files, id: \.self) { file in
+                ForEach(file_cabinet.current_directory.notes) { note in
                     VStack {
                         Image(systemName: "doc")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 50, height: 50)
-                        Text(file.lastPathComponent)
+                        Text(note.name())
                     }
                     .padding()
                     .onTapGesture {
                         // TODO: select file
-                        
+                        file_cabinet.select_item(name: note.name())
+                        on_file_select()
                     }
                 }
             }
         }
-         */
     }
 }
 

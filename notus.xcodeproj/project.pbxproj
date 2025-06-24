@@ -30,7 +30,12 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6A43E4CA2D98529700E23A84 /* notus */ = {
+		6A1E64B12E07880500D34576 /* notusDocs */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = notusDocs;
+			sourceTree = "<group>";
+		};
+		6A1E64CA2E07880B00D34576 /* notus */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = notus;
 			sourceTree = "<group>";
@@ -75,7 +80,8 @@
 		6A43E4BF2D98529700E23A84 = {
 			isa = PBXGroup;
 			children = (
-				6A43E4CA2D98529700E23A84 /* notus */,
+				6A1E64CA2E07880B00D34576 /* notus */,
+				6A1E64B12E07880500D34576 /* notusDocs */,
 				6A43E4DB2D98529B00E23A84 /* notusTests */,
 				6A43E4E52D98529B00E23A84 /* notusUITests */,
 				6A43E4C92D98529700E23A84 /* Products */,
@@ -108,7 +114,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				6A43E4CA2D98529700E23A84 /* notus */,
+				6A1E64B12E07880500D34576 /* notusDocs */,
+				6A1E64CA2E07880B00D34576 /* notus */,
 			);
 			name = notus;
 			packageProductDependencies = (

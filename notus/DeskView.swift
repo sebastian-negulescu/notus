@@ -9,6 +9,7 @@ import SwiftUI
 import PencilKit
 
 struct NoteView: UIViewRepresentable {
+    var file_cabinet: FileCabinet
     let canvas = PKCanvasView()
     let tool_picker = PKToolPicker()
     
@@ -20,6 +21,20 @@ struct NoteView: UIViewRepresentable {
 
         tool_picker.addObserver(canvas)
         setToolPickerVisibility(visible: true)
+        
+        // TODO: add better error handling when there is no current note
+        if file_cabinet.current_note == nil {
+            return canvas
+        }
+        
+        switch file_cabinet.current_note!.item_type {
+        case .Folder:
+            return canvas
+        case .NotePad:
+            canvas.drawing = file_cabinet.current_note!.note_pad!.page
+        case .NoteBook:
+            canvas.drawing = file_cabinet.current_note!.note_book!.pages[0]
+        }
         
         return canvas
     }
@@ -42,13 +57,20 @@ struct NoteView: UIViewRepresentable {
 struct DeskView: View {
     var file_cabinet: FileCabinet
     var on_file_away: () -> Void
+    var note: NoteView
+    
+    init(file_cabinet: FileCabinet, on_file_away: @escaping () -> Void) {
+        self.file_cabinet = file_cabinet
+        self.on_file_away = on_file_away
+        
+        self.note = NoteView(file_cabinet: self.file_cabinet)
+    }
     
     private func file_away() -> Void {
         note.setToolPickerVisibility(visible: false)
+        file_cabinet.current_note!.note_pad!.page = note.canvas.drawing
         on_file_away()
     }
-    
-    private let note = NoteView()
     
     var body: some View {
         ZStack(alignment: .topTrailing) {

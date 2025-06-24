@@ -14,7 +14,7 @@ enum CabinetItems {
     case NotePad
 }
 
-class CabinetItem {
+class CabinetItem : Identifiable {
     var item_type: CabinetItems
     var note_book: NoteBook?
     var note_pad: NotePad?
@@ -38,12 +38,12 @@ class CabinetItem {
 
 struct NoteBook {
     var name: String
-    var pages: [PKDrawingReference]
+    var pages: [PKDrawing]
 }
 
 struct NotePad {
     var name: String
-    var page: PKDrawingReference
+    var page: PKDrawing
 }
 
 class Folder {
@@ -73,7 +73,7 @@ class Folder {
 class FileCabinet {
     var root: Folder = Folder(name: "")
     
-    private var current_directory: Folder
+    var current_directory: Folder
     var current_note: CabinetItem? = nil
     
     init() {
@@ -99,14 +99,14 @@ class FileCabinet {
     }
     
     func new_item(name: String, item_type: CabinetItems) -> Bool {
-        var item = CabinetItem(item_type: item_type)
+        let item = CabinetItem(item_type: item_type)
         switch item_type {
         case .Folder:
             item.folder = Folder(name: name, notes: [])
         case .NotePad:
-            item.note_pad = NotePad(name: name, page: PKDrawingReference())
+            item.note_pad = NotePad(name: name, page: PKDrawing())
         case .NoteBook:
-            item.note_book = NoteBook(name: name, pages: [PKDrawingReference()])
+            item.note_book = NoteBook(name: name, pages: [PKDrawing()])
         }
         
         if Folder.name_exists(folder: current_directory, name: name) {
