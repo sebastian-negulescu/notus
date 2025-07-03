@@ -8,14 +8,27 @@
 import Foundation
 import PencilKit
 
-enum CabinetItems {
+enum CabinetItemType {
     case Folder
     case NoteBook
     case NotePad
+    
+    static func get_item_type(item_type: String) -> CabinetItemType {
+        switch item_type {
+        case "folder":
+            return .Folder
+        case "notebook":
+            return .NoteBook
+        case "notepad":
+            return .NotePad
+        default:
+            assert(false)
+        }
+    }
 }
 
 class CabinetItem : Identifiable {
-    var item_type: CabinetItems
+    var item_type: CabinetItemType
     var note_book: NoteBook?
     var note_pad: NotePad?
     var folder: Folder?
@@ -31,7 +44,7 @@ class CabinetItem : Identifiable {
         }
     }
     
-    init(item_type: CabinetItems) {
+    init(item_type: CabinetItemType) {
         self.item_type = item_type
     }
 }
@@ -46,9 +59,9 @@ struct NotePad {
     var page: PKDrawing
 }
 
-class Folder {
+class Folder: ObservableObject {
     var name: String
-    var notes: [CabinetItem]
+    @Published var notes: [CabinetItem]
     
     init(name: String) {
         self.name = name
@@ -68,51 +81,8 @@ class Folder {
         }
         return false
     }
-}
-
-class FileCabinet {
-    var root: Folder = Folder(name: "")
     
-    var current_directory: Folder
-    var current_note: CabinetItem? = nil
-    
-    init() {
-        current_directory = root
-    }
-    
-    func select_item(name: String) -> CabinetItem {
-        assert(Folder.name_exists(folder: current_directory, name: name))
-        
-        for cabinet_item in current_directory.notes {
-            if cabinet_item.name() == name {
-                switch cabinet_item.item_type {
-                case .Folder:
-                    current_directory = cabinet_item.folder!
-                case .NoteBook, .NotePad:
-                    current_note = cabinet_item
-                }
-                return cabinet_item
-            }
-        }
-        
-        assert(false)
-    }
-    
-    func new_item(name: String, item_type: CabinetItems) -> Bool {
-        let item = CabinetItem(item_type: item_type)
-        switch item_type {
-        case .Folder:
-            item.folder = Folder(name: name, notes: [])
-        case .NotePad:
-            item.note_pad = NotePad(name: name, page: PKDrawing())
-        case .NoteBook:
-            item.note_book = NoteBook(name: name, pages: [PKDrawing()])
-        }
-        
-        if Folder.name_exists(folder: current_directory, name: name) {
-            return false
-        }
-        current_directory.notes.append(item)
-        return true
+    func add_note(note: CabinetItem) -> Void {
+        notes = notes + [note]
     }
 }

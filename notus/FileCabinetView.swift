@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct FileCabinetView: View {
-    var file_cabinet: FileCabinet
+    @State var file_cabinet: FileCabinet
     var on_file_select: () -> Void
     
-    func test_new_file() -> Void {
-        file_cabinet.new_item(name: "test", item_type: CabinetItems.NotePad)
-        file_cabinet.select_item(name:"test")
-        on_file_select()
+    @StateObject var current_folder: Folder
+    
+    @State var creating_new_item: Bool = false
+    
+    func new_item() -> Void {
+        creating_new_item = true
     }
     
     var columns = [
@@ -26,17 +28,20 @@ struct FileCabinetView: View {
     
     var body: some View {
         HStack {
-            Text("/test/path")
+            Text(file_cabinet.generate_path())
+                .padding(.leading)
+            Spacer()
             Button(action: {}) {
                 Text("preferences")
             }
-            Button(action: test_new_file) {
+            Button(action: new_item) {
                 Text("new")
             }
+            .padding(.trailing)
         }
         ScrollView {
             LazyVGrid(columns: columns, spacing: 20) {
-                ForEach(file_cabinet.current_directory.notes) { note in
+                ForEach(current_folder.notes) { note in
                     VStack {
                         Image(systemName: "doc")
                             .resizable()
@@ -46,16 +51,21 @@ struct FileCabinetView: View {
                     }
                     .padding()
                     .onTapGesture {
-                        // TODO: select file
-                        file_cabinet.select_item(name: note.name())
-                        on_file_select()
+                        let item_type: CabinetItemType = file_cabinet.select_item(name: note.name()).item_type
+                        if item_type != CabinetItemType.Folder {
+                            on_file_select()
+                        }
                     }
                 }
             }
+        }
+        .sheet(isPresented: $creating_new_item) {
+            NewItemView(folder: current_folder)
         }
     }
 }
 
 #Preview {
-    FileCabinetView(file_cabinet: FileCabinet(), on_file_select: {_ = Screen.Desk})
+    @Previewable @State var file_cabinet = FileCabinet()
+    FileCabinetView(file_cabinet: file_cabinet, on_file_select: {_ = Screen.Desk}, current_folder: file_cabinet.current_directory)
 }
