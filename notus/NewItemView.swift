@@ -9,7 +9,6 @@ import SwiftUI
 
 struct NewItemView: View {
     @State var file_cabinet: FileCabinet
-    var on_create: () -> Void
     
     @Environment(\.dismiss) var dismiss
     
@@ -39,7 +38,6 @@ struct NewItemView: View {
                 Spacer()
                 Button("create") {
                     if create_item() {
-                        on_create()
                         dismiss()
                     }
                 }
@@ -74,5 +72,5 @@ struct NewItemView: View {
 }
 
 #Preview {
-    NewItemView(file_cabinet: FileCabinet(), on_create: {_ = true})
+    NewItemView(file_cabinet: FileCabinet())
 }

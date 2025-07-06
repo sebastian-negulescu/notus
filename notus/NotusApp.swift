@@ -11,7 +11,7 @@ import PencilKit
 @main
 struct NotusApp: App {
     @State private var screen: Screen = Screen.FileCabinet
-    @State private var file_cabinet: FileCabinet = FileCabinet()
+    private let file_cabinet: FileCabinet = FileCabinet()
     
     var body: some Scene {
         WindowGroup {

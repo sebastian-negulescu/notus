@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct FileCabinetView: View {
-    @State var file_cabinet: FileCabinet
-    var on_file_select: () -> Void
+    let file_cabinet: FileCabinet
+    let on_file_select: () -> Void
     
-    @State var creating_new_item: Bool = false
-    @State var fetch_items: Bool = false
+    @State private var creating_new_item: Bool = false
+    @State private var item_names: [String]
+    
+    init(file_cabinet: FileCabinet, on_file_select: @escaping () -> Void) {
+        self.file_cabinet = file_cabinet
+        self.on_file_select = on_file_select
+        item_names = file_cabinet.read_folder() ?? []
+    }
     
     func new_item() -> Void {
         creating_new_item = true
@@ -40,7 +46,7 @@ struct FileCabinetView: View {
         }
         ScrollView {
             LazyVGrid(columns: columns, spacing: 20) {
-                ForEach(file_cabinet.read_folder() ?? [], id: \.self) { note in
+                ForEach(item_names, id: \.self) { note in
                     VStack {
                         Image(systemName: "doc")
                             .resizable()
@@ -55,9 +61,9 @@ struct FileCabinetView: View {
             }
         }
         .sheet(isPresented: $creating_new_item, onDismiss: {
-            fetch_items = false
+            item_names = file_cabinet.read_folder() ?? []
         }) {
-            NewItemView(file_cabinet: file_cabinet, on_create: {fetch_items = true})
+            NewItemView(file_cabinet: file_cabinet)
         }
     }
 }
