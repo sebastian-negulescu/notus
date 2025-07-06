@@ -22,12 +22,21 @@ struct Folder {
 
 class FileCabinet {
     var desk: Note? = nil
+    var open_folder: URL
     
-    private let file_manager: FileManager = FileManager.default
-    private var open_folder: URL
+    private let file_manager: FileManager = FileManager.default    
     
     init() {
         open_folder = file_manager.urls(for: .documentDirectory, in: .userDomainMask).first!.appending(path: "notus.data", directoryHint: .isDirectory)
+        if !file_manager.fileExists(atPath: open_folder.path()) {
+            os_log("root folder does not exist", type: .info)
+            do {
+                try file_manager.createDirectory(at: open_folder, withIntermediateDirectories: true)
+                os_log("root folder created at: %s", type: .info, open_folder.path())
+            } catch {
+                os_log("Could not create root folder: %s", type: .error, error.localizedDescription)
+            }
+        }
     }
     
     private func get_note_path(_ name: String) -> URL {
@@ -51,7 +60,7 @@ class FileCabinet {
     
     func read_folder() -> [String]? {
         do {
-            let contents = try file_manager.contentsOfDirectory(atPath: open_folder.absoluteString)
+            let contents = try file_manager.contentsOfDirectory(atPath: open_folder.path())
             return contents
         } catch {
             os_log("Could not read folder: %s", type: .error, error.localizedDescription)

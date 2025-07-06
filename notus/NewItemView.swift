@@ -8,18 +8,25 @@
 import SwiftUI
 
 struct NewItemView: View {
-    @ObservedObject var folder: Folder
+    @State var file_cabinet: FileCabinet
+    var on_create: () -> Void
     
     @Environment(\.dismiss) var dismiss
     
     @State private var selected_item: String = ""
-    private let item_options = ["folder", "notepad", "notebook"]
+    private let item_options = ["folder", "note"]
     
     @State private var item_name: String = ""
     
     private func create_item() -> Bool {
-        let item_type: CabinetItemType = CabinetItemType.get_item_type(item_type: selected_item)
-        return FileCabinet.new_item(folder: folder, name: item_name, item_type: item_type)
+        switch selected_item {
+        case "folder":
+            return file_cabinet.create_folder(name: item_name)
+        case "note":
+            return file_cabinet.create_note(name: item_name)
+        default:
+            return false
+        }
     }
     
     var body: some View {
@@ -32,6 +39,7 @@ struct NewItemView: View {
                 Spacer()
                 Button("create") {
                     if create_item() {
+                        on_create()
                         dismiss()
                     }
                 }
@@ -66,6 +74,5 @@ struct NewItemView: View {
 }
 
 #Preview {
-    @Previewable @StateObject var folder = Folder(name: "")
-    NewItemView(folder: folder)
+    NewItemView(file_cabinet: FileCabinet(), on_create: {_ = true})
 }

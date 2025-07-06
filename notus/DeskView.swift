@@ -23,18 +23,6 @@ struct NoteView: UIViewRepresentable {
         setToolPickerVisibility(visible: true)
         
         // TODO: add better error handling when there is no current note
-        if file_cabinet.current_note == nil {
-            return canvas
-        }
-        
-        switch file_cabinet.current_note!.item_type {
-        case .Folder:
-            return canvas
-        case .NotePad:
-            canvas.drawing = file_cabinet.current_note!.note_pad!.page
-        case .NoteBook:
-            canvas.drawing = file_cabinet.current_note!.note_book!.pages[0]
-        }
         
         return canvas
     }
@@ -68,7 +56,7 @@ struct DeskView: View {
     
     private func file_away() -> Void {
         note.setToolPickerVisibility(visible: false)
-        file_cabinet.current_note!.note_pad!.page = note.canvas.drawing
+        // file_cabinet.current_note!.note_pad!.page = note.canvas.drawing
         on_file_away()
     }
     
