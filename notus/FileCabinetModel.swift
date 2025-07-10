@@ -9,6 +9,11 @@ import Foundation
 import PencilKit
 import os
 
+enum CabinetItems {
+    case note
+    case folder
+}
+
 struct Note {
     var name: String
     var contents: PKDrawing
@@ -24,10 +29,12 @@ class FileCabinet {
     var desk: Note? = nil
     var open_folder: URL
     
-    private let file_manager: FileManager = FileManager.default    
+    private let file_manager: FileManager = FileManager.default
+    private let root_path: URL
     
     init() {
-        open_folder = file_manager.urls(for: .documentDirectory, in: .userDomainMask).first!.appending(path: "notus.data", directoryHint: .isDirectory)
+        root_path = file_manager.urls(for: .documentDirectory, in: .userDomainMask).first!.appending(path: "notus.data", directoryHint: .isDirectory)
+        open_folder = root_path
         if !file_manager.fileExists(atPath: open_folder.path()) {
             os_log("root folder does not exist", type: .info)
             do {
@@ -113,7 +120,8 @@ class FileCabinet {
     
     func read_note(name: String) -> Note? {
         do {
-            let note = Note(name: name, contents: try PKDrawing(data: Data(contentsOf: get_note_path(name))))
+            let note_contents = try PKDrawing(data: Data(contentsOf: get_note_path(name)))
+            let note = Note(name: name, contents: note_contents)
             return note
         } catch {
             os_log("Could not load note: %s", type: .error, error.localizedDescription)
@@ -142,5 +150,21 @@ class FileCabinet {
         }
         
         return false
+    }
+    
+    func item_type(name: String, _ relative: Bool = false) -> CabinetItems {
+        var file_path: URL = open_folder.appending(path: name)
+        if !relative {
+            file_path = root_path.appending(path: name)
+        }
+        
+        var is_dir: ObjCBool = false
+        assert(file_manager.fileExists(atPath: file_path.path(), isDirectory: &is_dir))
+        
+        if is_dir.boolValue {
+            return CabinetItems.folder
+        }
+        
+        return CabinetItems.note
     }
 }

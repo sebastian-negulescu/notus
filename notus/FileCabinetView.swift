@@ -9,22 +9,23 @@ import SwiftUI
 
 struct FileCabinetView: View {
     let file_cabinet: FileCabinet
-    let on_file_select: () -> Void
+    let on_note_select: () -> Void
     
-    @State private var creating_new_item: Bool = false
     @State private var item_names: [String]
     
-    init(file_cabinet: FileCabinet, on_file_select: @escaping () -> Void) {
+    init(file_cabinet: FileCabinet, on_note_select: @escaping () -> Void) {
         self.file_cabinet = file_cabinet
-        self.on_file_select = on_file_select
+        self.on_note_select = on_note_select
         item_names = file_cabinet.read_folder() ?? []
     }
     
+    @State private var creating_new_item: Bool = false
     func new_item() -> Void {
         creating_new_item = true
     }
     
     var columns = [
+            GridItem(.flexible(), spacing: 20),
             GridItem(.flexible(), spacing: 20),
             GridItem(.flexible(), spacing: 20),
             GridItem(.flexible(), spacing: 20),
@@ -39,9 +40,11 @@ struct FileCabinetView: View {
             Button(action: {}) {
                 Text("preferences")
             }
+            .buttonStyle(.bordered)
             Button(action: new_item) {
                 Text("new")
             }
+            .buttonStyle(.bordered)
             .padding(.trailing)
         }
         ScrollView {
@@ -56,6 +59,10 @@ struct FileCabinetView: View {
                     }
                     .padding()
                     .onTapGesture {
+                        if file_cabinet.item_type(name: note) == CabinetItems.note {
+                            file_cabinet.desk = file_cabinet.read_note(name: note)
+                            on_note_select()
+                        }
                     }
                 }
             }
@@ -70,5 +77,5 @@ struct FileCabinetView: View {
 
 #Preview {
     @Previewable @State var file_cabinet = FileCabinet()
-    FileCabinetView(file_cabinet: file_cabinet, on_file_select: {_ = Screen.Desk})
+    FileCabinetView(file_cabinet: file_cabinet, on_note_select: {_ = Screen.Desk})
 }
