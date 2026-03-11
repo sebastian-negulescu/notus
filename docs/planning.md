@@ -37,3 +37,53 @@
 - Create a restorable archive of the file cabinet
 - Rename a book from the file cabinet
 - Rename a page from the file cabinet
+
+### Page
+
+Simplest drawable view.
+
+Serializeable struct with fields:
+- UUID
+- Name
+- Tags
+- Links (each link is a struct with coords, dimensions, and UUID it maps to)
+- Canvas
+
+### Desk
+
+Place where we modify pages.
+
+Loads page, and persists either on each modification or on file away.
+
+What should we be able to do from the Desk?
+- File away the current page
+- View and modify the name
+- View and modify tags
+- Export to PDF
+- Change background colour
+- Change background pattern
+- Change primary tool
+- Change secondary tool
+- Import image
+- Insert links to other pages
+
+Tabs:
+- Admin
+    - Name
+    - Tags
+    - Creation date
+    - File away
+    - Export
+    - Delete
+- Tools
+    - Change primary tool
+    - Change secondary tool
+- Paper
+    - Change background
+        - Colour
+        - Pattern
+    - Import image
+    - Insert link
+
+Realistically, we could probably combine the tools and paper stationery tabs.
+Though two tabs feels worse than three.
