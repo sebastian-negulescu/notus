@@ -8,71 +8,45 @@
 import SwiftUI
 import PencilKit
 
-struct NoteView: UIViewRepresentable {
-    let drawing: PKDrawing
-    let canvas = PKCanvasView()
-    let tool_picker = PKToolPicker()
-    
-    func makeUIView(context: Context) -> UIViewType {
-        canvas.drawingPolicy = .pencilOnly
-        canvas.tool = PKInkingTool(.pen, color: .black, width: 10)
-
-        canvas.becomeFirstResponder()
-
-        tool_picker.addObserver(canvas)
-        setToolPickerVisibility(visible: true)
-        
-        canvas.drawing = drawing
-        
-        return canvas
+extension Comparable {
+    func clamped(to limits: ClosedRange<Self>) -> Self {
+        return min(max(self, limits.lowerBound), limits.upperBound)
     }
-    
-    func updateUIView(_ type: UIViewType, context: Context) {
-        // TODO: mark drawing as modified
-    }
-    
-    static func dismantleUIView(uiView: UIViewType, coordinator: ()) {
-        // TODO: save drawing
-    }
-    
-    func setToolPickerVisibility(visible: Bool) {
-        tool_picker.setVisible(visible, forFirstResponder: canvas)
-    }
-    
-    typealias UIViewType = PKCanvasView
 }
 
 struct DeskView: View {
-    var file_cabinet: FileCabinet
-    var on_file_away: () -> Void
-    var note: NoteView
+    var page: PageView
     
-    init(file_cabinet: FileCabinet, on_file_away: @escaping () -> Void) {
-        self.file_cabinet = file_cabinet
-        self.on_file_away = on_file_away
-        
-        self.note = NoteView(drawing: self.file_cabinet.desk!.contents)
+    init() {
+        self.page = PageView(drawing: PKDrawing())
     }
     
-    private func file_away() -> Void {
-        note.setToolPickerVisibility(visible: false)
-        file_cabinet.desk!.contents = note.canvas.drawing
-        assert(file_cabinet.update_note(note: file_cabinet.desk!))
-        on_file_away()
-    }
+    @State var tab_x: CGFloat = 0
+    @State var tab_offset: CGSize = .zero
     
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            note
-            Button(action: file_away) {
-                Text("file away")
-            }
-            .buttonStyle(.bordered)
-            .padding(.trailing, 10)
+            page
+            TabView(colour: .red, content: Text("Hello, world!"))
+                .offset(x: (500 + (tab_offset.width + tab_x)).clamped(to: CGFloat(0)...CGFloat(500)))
+                .gesture(
+                    DragGesture()
+                        .onChanged { gesture in
+                            tab_offset = gesture.translation
+                        }
+                        .onEnded { gesture in
+                            tab_x += gesture.translation.width
+                            tab_offset = .zero
+                        }
+                )
+            TabView(colour: .green, content: Text("Goodbye, world!"))
+                .offset(x: 500, y: 50)
+            TabView(colour: .blue, content: Text("Goodbye, world!"))
+                .offset(x: 500, y: 100)
         }
     }
 }
 
 #Preview {
-    DeskView(file_cabinet: FileCabinet(), on_file_away: {_ = Screen.FileCabinet})
+    DeskView()
 }
