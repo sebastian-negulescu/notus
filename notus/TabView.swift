@@ -13,7 +13,7 @@ struct TabView<Content: View>: View {
     @State var x_offset: CGFloat = 0
     @State var intermediate_offset: CGFloat = 0
     
-    let line_width: CGFloat = 4
+    let line_width: CGFloat = 10
     let radius: CGFloat = 10
     
     let body_dimensions: (CGFloat, CGFloat) = (500, 500)
@@ -27,7 +27,7 @@ struct TabView<Content: View>: View {
     let content: Content
     
     init(tab_offset: UInt, colour: Color, content: Content) {
-        self.y_offset = tab_dimensions.1 * CGFloat(tab_offset)
+        self.y_offset = (tab_dimensions.1 + 2 * line_width) * CGFloat(tab_offset)
         self.colour = colour
         self.content = content
         
@@ -44,7 +44,7 @@ struct TabView<Content: View>: View {
                 
             UnevenRoundedRectangle(bottomLeadingRadius: radius)
                 .stroke(colour, lineWidth: line_width)
-                .fill(colour)
+                .fill(.white)
                 .frame(width: body_dimensions.0, height: body_dimensions.1)
                 .overlay {
                     content

@@ -14,3 +14,5 @@ extension Comparable {
 func almost_equal<T:FloatingPoint>(_ a:T, _ b:T) -> Bool {
     return b.nextDown ... b.nextUp ~= a
 }
+
+let do_nothing: () -> Void = {}

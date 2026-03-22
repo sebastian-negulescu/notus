@@ -20,9 +20,7 @@ struct DeskView: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             page
-            TabView(tab_offset: 0, colour: .red, content: Text("Hello, world!"))
-            TabView(tab_offset: 1, colour: .green, content: Text("Hello, world!"))
-            TabView(tab_offset: 2, colour: .blue, content: Text("Hello, world!"))
+            TabStackView()
         }
     }
 }
