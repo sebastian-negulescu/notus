@@ -187,8 +187,32 @@ struct PaperTabView: View {
         self.tab_offset = tab_offset
     }
     
+    @State var spacing: CGFloat = 50.0
+    
+    var content: some View {
+        VStack {
+            HStack {
+                Text("Pattern")
+                    .font(.title2)
+                Spacer()
+            }
+            HStack {
+                Text("Spacing")
+                    .font(.title2)
+                Slider(value: $spacing, in: 0...100, step: 1)
+                Spacer()
+            }
+            HStack {
+                Text("Colour")
+                    .font(.title2)
+                Spacer()
+            }
+        }
+        .padding(20)
+    }
+    
     var body: some View {
-        TabView(tab_offset: self.tab_offset, colour: .blue, content: Text("paper view"))
+        TabView(tab_offset: self.tab_offset, colour: .blue, content: content)
     }
 }
 
@@ -203,6 +227,6 @@ struct TabStackView: View {
 }
 
 #Preview {
-    ToolsTabView(tab_offset: 0)
+    PaperTabView(tab_offset: 0)
         .offset(x: -500)
 }
