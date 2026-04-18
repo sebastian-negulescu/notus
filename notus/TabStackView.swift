@@ -181,13 +181,27 @@ struct ToolsTabView: View {
     }
 }
 
+enum Pattern {
+    case Blank
+    case Line
+    case Grid
+    case Dot
+    case Iso
+}
+
+func generate_pattern(pattern: Int?, size: CGSize, spacing: CGFloat) -> Path {
+    return Path()
+}
+
 struct PaperTabView: View {
     let tab_offset: UInt
     init(tab_offset: UInt) {
         self.tab_offset = tab_offset
     }
     
+    @State var pattern: Int? = nil
     @State var spacing: CGFloat = 50.0
+    @State var background: Color = Color.white
     
     var content: some View {
         VStack {
@@ -198,10 +212,20 @@ struct PaperTabView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 40, height: 40)
+                    .padding(8)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.clear, lineWidth: 3)
+                    )
                 Image(systemName: "equal.circle")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 40, height: 40)
+                    .padding(8)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.clear, lineWidth: 3)
+                    )
                 Image(systemName: "square.circle")
                     .resizable()
                     .scaledToFit()
@@ -209,28 +233,92 @@ struct PaperTabView: View {
                     .padding(8)
                     .overlay(
                         Circle()
-                            .stroke(Color.blue)
+                            .stroke(Color.blue, lineWidth: 3)
                     )
                 Image(systemName: "circle.grid.3x3.circle")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 40, height: 40)
+                    .padding(8)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.clear, lineWidth: 3)
+                    )
                 Image(systemName: "circle.hexagongrid.circle")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 40, height: 40)
+                    .padding(8)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.clear, lineWidth: 3)
+                    )
                 Spacer()
             }
             HStack {
                 Text("Spacing")
                     .font(.title2)
+                Spacer()
                 Slider(value: $spacing, in: 0...100, step: 1)
                 Spacer()
             }
             HStack {
                 Text("Colour")
                     .font(.title2)
+                Image(systemName:"circle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+                    .padding(8)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.blue, lineWidth: 3)
+                    )
+                Image(systemName:"circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+                    .padding(8)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.clear, lineWidth: 3)
+                    )
+                    .foregroundStyle(.black)
+                Image(systemName:"circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+                    .padding(8)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.clear, lineWidth: 3)
+                    )
+                    .foregroundStyle(Color(red: 251/255, green: 241/255, blue: 199/255))
                 Spacer()
+            }
+            Spacer()
+            Canvas { context, size in
+                context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(background))
+                let pattern_path = generate_pattern(pattern: pattern, size: size, spacing: spacing)
+                context.fill(pattern_path, with: .color(.black))
+            }
+                .frame(width: 150, height: 200)
+                .border(.black)
+            Spacer()
+            HStack {
+                Button(action: do_nothing) {
+                    Text("Apply current")
+                }
+                .buttonStyle(.bordered)
+                Button(action: do_nothing) {
+                    Text("Apply all")
+                }
+                .buttonStyle(.bordered)
+                Button(action: do_nothing) {
+                    Text("Discard")
+                    .foregroundStyle(.red)
+                }
+                .buttonStyle(.bordered)
             }
         }
         .padding(20)
