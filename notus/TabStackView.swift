@@ -189,8 +189,54 @@ enum Pattern {
     case Iso
 }
 
-func generate_pattern(pattern: Int?, size: CGSize, spacing: CGFloat) -> Path {
-    return Path()
+func generate_pattern(pattern: Pattern, size: CGSize, spacing: CGFloat) -> Path {
+    var path = Path()
+    
+    switch (pattern) {
+    case .Line:
+        for y in stride(from: 0, through: size.height, by: spacing) {
+            path.move(to: CGPoint(x: 0, y: y))
+            path.addLine(to: CGPoint(x: size.width, y: y))
+        }
+    case .Grid:
+        for x in stride(from: 0, through: size.width, by: spacing) {
+            path.move(to: CGPoint(x: x, y: 0))
+            path.addLine(to: CGPoint(x: x, y: size.height))
+        }
+        for y in stride(from: 0, through: size.height, by: spacing) {
+            path.move(to: CGPoint(x: 0, y: y))
+            path.addLine(to: CGPoint(x: size.width, y: y))
+        }
+    case .Dot:
+        let dot_size: CGFloat = 1.0
+        for x in stride(from: spacing, through: size.width, by: spacing) {
+            for y in stride(from: spacing, through: size.height, by: spacing) {
+                let rect = CGRect(x: x - (dot_size / 2),
+                                  y: y - (dot_size / 2),
+                                  width: dot_size,
+                                  height: dot_size)
+                path.addEllipse(in: rect)
+            }
+        }
+    case .Iso:
+        let dot_size: CGFloat = 1.0
+        var even = true
+        let line_height = sqrt((spacing * spacing - spacing * spacing / 4))
+        for y in stride(from: spacing / 2, through: size.height, by: line_height) {
+            for x in stride(from: even ? spacing : spacing / 2, through: size.width, by: spacing) {
+                let rect = CGRect(x: x - (dot_size / 2),
+                                  y: y - (dot_size / 2),
+                                  width: dot_size,
+                                  height: dot_size)
+                path.addEllipse(in: rect)
+            }
+            even = !even
+        }
+    default:
+        break
+    }
+    
+    return path
 }
 
 struct PaperTabView: View {
@@ -199,9 +245,9 @@ struct PaperTabView: View {
         self.tab_offset = tab_offset
     }
     
-    @State var pattern: Int? = nil
+    @State var pattern: Pattern = .Iso
     @State var spacing: CGFloat = 50.0
-    @State var background: Color = Color.white
+    @State var background: Color = .white
     
     var content: some View {
         VStack {
@@ -300,7 +346,7 @@ struct PaperTabView: View {
             Canvas { context, size in
                 context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(background))
                 let pattern_path = generate_pattern(pattern: pattern, size: size, spacing: spacing)
-                context.fill(pattern_path, with: .color(.black))
+                context.stroke(pattern_path, with: .color(.black))
             }
                 .frame(width: 150, height: 200)
                 .border(.black)
