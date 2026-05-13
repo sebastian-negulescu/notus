@@ -326,8 +326,9 @@ struct PaperTabView: View {
         self.tab_offset = tab_offset
     }
     
-    @State var pattern: Pattern = .Grid
+    @State var pattern: Pattern = .Dot
     @State var spacing: CGFloat = 50.0
+    @State var weight: CGFloat = 1.0
     @State var background: Color = .white
     
     var content: some View {
@@ -386,7 +387,14 @@ struct PaperTabView: View {
                 Text("Spacing")
                     .font(.title2)
                 Spacer()
-                Slider(value: $spacing, in: 0...100, step: 1)
+                Slider(value: $spacing, in: 25...75)
+                Spacer()
+            }
+            HStack {
+                Text("Weight")
+                    .font(.title2)
+                Spacer()
+                Slider(value: $weight, in: 0.1...10)
                 Spacer()
             }
             HStack {
@@ -427,9 +435,9 @@ struct PaperTabView: View {
             Canvas { context, size in
                 context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(background))
                 let pattern_path = generate_pattern(pattern: pattern, size: size, spacing: spacing)
-                context.stroke(pattern_path, with: .color(.black))
+                context.stroke(pattern_path, with: .color(.black), lineWidth: weight)
             }
-                .frame(width: 150, height: 200)
+                .frame(width: 200, height: 200)
                 .border(.black)
             Spacer()
             HStack {
