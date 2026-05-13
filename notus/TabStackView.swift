@@ -340,6 +340,7 @@ struct PaperTabView: View {
             HStack {
                 Text("Pattern")
                     .font(.title2)
+                    .frame(minWidth: 100, alignment: .leading)
                 Image(systemName:"circle")
                     .resizable()
                     .scaledToFit()
@@ -349,6 +350,9 @@ struct PaperTabView: View {
                         Circle()
                             .stroke(pattern == .Blank ? selected : unselected, lineWidth: 3)
                     )
+                    .onTapGesture {
+                        pattern = .Blank
+                    }
                 Image(systemName: "equal.circle")
                     .resizable()
                     .scaledToFit()
@@ -402,20 +406,23 @@ struct PaperTabView: View {
             HStack {
                 Text("Spacing")
                     .font(.title2)
-                Spacer()
+                    .frame(minWidth: 100, alignment: .leading)
                 Slider(value: $spacing, in: 25...75)
+                    .frame(maxWidth: 300)
                 Spacer()
             }
             HStack {
                 Text("Weight")
                     .font(.title2)
-                Spacer()
+                    .frame(minWidth: 100, alignment: .leading)
                 Slider(value: $weight, in: 0.1...10)
+                    .frame(maxWidth: 300)
                 Spacer()
             }
             HStack {
                 Text("Colour")
                     .font(.title2)
+                    .frame(minWidth: 100, alignment: .leading)
                 Image(systemName:"circle")
                     .resizable()
                     .scaledToFit()
@@ -465,7 +472,6 @@ struct PaperTabView: View {
                 let pattern_path = generate_pattern(pattern: pattern, size: size, spacing: spacing)
                 context.stroke(pattern_path, with: .color(pattern_colour), lineWidth: weight)
             }
-                .frame(width: 200, height: 200)
                 .border(.black)
             Spacer()
             HStack {
