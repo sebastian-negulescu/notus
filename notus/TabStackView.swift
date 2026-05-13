@@ -191,46 +191,127 @@ enum Pattern {
 
 func generate_pattern(pattern: Pattern, size: CGSize, spacing: CGFloat) -> Path {
     var path = Path()
+    let midpoint = CGSize(width: size.width / 2, height: size.height / 2)
+    let filler_weight = 1.0
     
     switch (pattern) {
     case .Line:
-        for y in stride(from: 0, through: size.height, by: spacing) {
+        for y in stride(from: midpoint.height + spacing / 2, through: size.height, by: spacing) {
+            path.move(to: CGPoint(x: 0, y: y))
+            path.addLine(to: CGPoint(x: size.width, y: y))
+        }
+        for y in stride(from: midpoint.height - spacing / 2, through: 0, by: -spacing) {
             path.move(to: CGPoint(x: 0, y: y))
             path.addLine(to: CGPoint(x: size.width, y: y))
         }
     case .Grid:
-        for x in stride(from: 0, through: size.width, by: spacing) {
+        for x in stride(from: midpoint.width + spacing / 2, through: size.width, by: spacing) {
             path.move(to: CGPoint(x: x, y: 0))
             path.addLine(to: CGPoint(x: x, y: size.height))
         }
-        for y in stride(from: 0, through: size.height, by: spacing) {
+        for x in stride(from: midpoint.width - spacing / 2, through: 0, by: -spacing) {
+            path.move(to: CGPoint(x: x, y: 0))
+            path.addLine(to: CGPoint(x: x, y: size.height))
+        }
+        for y in stride(from: midpoint.height + spacing / 2, through: size.height, by: spacing) {
+            path.move(to: CGPoint(x: 0, y: y))
+            path.addLine(to: CGPoint(x: size.width, y: y))
+        }
+        for y in stride(from: midpoint.height - spacing / 2, through: 0, by: -spacing) {
             path.move(to: CGPoint(x: 0, y: y))
             path.addLine(to: CGPoint(x: size.width, y: y))
         }
     case .Dot:
-        let dot_size: CGFloat = 1.0
-        for x in stride(from: spacing, through: size.width, by: spacing) {
-            for y in stride(from: spacing, through: size.height, by: spacing) {
-                let rect = CGRect(x: x - (dot_size / 2),
-                                  y: y - (dot_size / 2),
-                                  width: dot_size,
-                                  height: dot_size)
+        for x in stride(from: midpoint.width + spacing / 2, through: size.width, by: spacing) {
+            for y in stride(from: midpoint.height + spacing / 2, through: size.height, by: spacing) {
+                let rect = CGRect(x: x - (filler_weight / 2),
+                                  y: y - (filler_weight / 2),
+                                  width: filler_weight,
+                                  height: filler_weight)
+                path.addEllipse(in: rect)
+            }
+            for y in stride(from: midpoint.height - spacing / 2, through: 0, by: -spacing) {
+                let rect = CGRect(x: x - (filler_weight / 2),
+                                  y: y - (filler_weight / 2),
+                                  width: filler_weight,
+                                  height: filler_weight)
+                path.addEllipse(in: rect)
+            }
+        }
+        for x in stride(from: midpoint.width - spacing / 2, through: 0, by: -spacing) {
+            for y in stride(from: midpoint.height + spacing / 2, through: size.height, by: spacing) {
+                let rect = CGRect(x: x - (filler_weight / 2),
+                                  y: y - (filler_weight / 2),
+                                  width: filler_weight,
+                                  height: filler_weight)
+                path.addEllipse(in: rect)
+            }
+            for y in stride(from: midpoint.height - spacing / 2, through: 0, by: -spacing) {
+                let rect = CGRect(x: x - (filler_weight / 2),
+                                  y: y - (filler_weight / 2),
+                                  width: filler_weight,
+                                  height: filler_weight)
                 path.addEllipse(in: rect)
             }
         }
     case .Iso:
-        let dot_size: CGFloat = 1.0
-        var even = true
         let line_height = sqrt((spacing * spacing - spacing * spacing / 4))
-        for y in stride(from: spacing / 2, through: size.height, by: line_height) {
-            for x in stride(from: even ? spacing : spacing / 2, through: size.width, by: spacing) {
-                let rect = CGRect(x: x - (dot_size / 2),
-                                  y: y - (dot_size / 2),
-                                  width: dot_size,
-                                  height: dot_size)
+        var offset: Bool = true
+        for x in stride(from: midpoint.width + spacing / 2, through: size.width + spacing, by: spacing) {
+            offset = true
+            for y in stride(from: midpoint.height + line_height / 2, through: size.height, by: line_height) {
+                var x_mod = x
+                if offset {
+                    x_mod -= spacing / 2
+                }
+                let rect = CGRect(x: x_mod - (filler_weight / 2),
+                                  y: y - (filler_weight / 2),
+                                  width: filler_weight,
+                                  height: filler_weight)
                 path.addEllipse(in: rect)
+                offset = !offset
             }
-            even = !even
+            offset = false
+            for y in stride(from: midpoint.height - line_height / 2, through: 0, by: -line_height) {
+                var x_mod = x
+                if offset {
+                    x_mod -= spacing / 2
+                }
+                let rect = CGRect(x: x_mod - (filler_weight / 2),
+                                  y: y - (filler_weight / 2),
+                                  width: filler_weight,
+                                  height: filler_weight)
+                path.addEllipse(in: rect)
+                offset = !offset
+            }
+        }
+        for x in stride(from: midpoint.width - spacing / 2, through: 0, by: -spacing) {
+            offset = true
+            for y in stride(from: midpoint.height + line_height / 2, through: size.height, by: line_height) {
+                var x_mod = x
+                if offset {
+                    x_mod -= spacing / 2
+                }
+                let rect = CGRect(x: x_mod - (filler_weight / 2),
+                                  y: y - (filler_weight / 2),
+                                  width: filler_weight,
+                                  height: filler_weight)
+                path.addEllipse(in: rect)
+                offset = !offset
+            }
+            offset = false
+            for y in stride(from: midpoint.height - line_height / 2, through: 0, by: -line_height) {
+                var x_mod = x
+                if offset {
+                    x_mod -= spacing / 2
+                }
+                let rect = CGRect(x: x_mod - (filler_weight / 2),
+                                  y: y - (filler_weight / 2),
+                                  width: filler_weight,
+                                  height: filler_weight)
+                path.addEllipse(in: rect)
+                offset = !offset
+            }
         }
     default:
         break
@@ -245,7 +326,7 @@ struct PaperTabView: View {
         self.tab_offset = tab_offset
     }
     
-    @State var pattern: Pattern = .Iso
+    @State var pattern: Pattern = .Grid
     @State var spacing: CGFloat = 50.0
     @State var background: Color = .white
     
