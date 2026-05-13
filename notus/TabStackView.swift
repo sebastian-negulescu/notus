@@ -329,7 +329,11 @@ struct PaperTabView: View {
     @State var pattern: Pattern = .Dot
     @State var spacing: CGFloat = 50.0
     @State var weight: CGFloat = 1.0
-    @State var background: Color = .white
+    @State var pattern_colour: Color = .black
+    @State var background_colour: Color = .white
+    
+    let selected: Color = .blue
+    let unselected: Color = .clear
     
     var content: some View {
         VStack {
@@ -343,7 +347,7 @@ struct PaperTabView: View {
                     .padding(8)
                     .overlay(
                         Circle()
-                            .stroke(Color.clear, lineWidth: 3)
+                            .stroke(pattern == .Blank ? selected : unselected, lineWidth: 3)
                     )
                 Image(systemName: "equal.circle")
                     .resizable()
@@ -352,8 +356,11 @@ struct PaperTabView: View {
                     .padding(8)
                     .overlay(
                         Circle()
-                            .stroke(Color.clear, lineWidth: 3)
+                            .stroke(pattern == .Line ? selected : unselected, lineWidth: 3)
                     )
+                    .onTapGesture {
+                        pattern = .Line
+                    }
                 Image(systemName: "square.circle")
                     .resizable()
                     .scaledToFit()
@@ -361,8 +368,11 @@ struct PaperTabView: View {
                     .padding(8)
                     .overlay(
                         Circle()
-                            .stroke(Color.blue, lineWidth: 3)
+                            .stroke(pattern == .Grid ? selected : unselected, lineWidth: 3)
                     )
+                    .onTapGesture {
+                        pattern = .Grid
+                    }
                 Image(systemName: "circle.grid.3x3.circle")
                     .resizable()
                     .scaledToFit()
@@ -370,8 +380,11 @@ struct PaperTabView: View {
                     .padding(8)
                     .overlay(
                         Circle()
-                            .stroke(Color.clear, lineWidth: 3)
+                            .stroke(pattern == .Dot ? selected : unselected, lineWidth: 3)
                     )
+                    .onTapGesture {
+                        pattern = .Dot
+                    }
                 Image(systemName: "circle.hexagongrid.circle")
                     .resizable()
                     .scaledToFit()
@@ -379,8 +392,11 @@ struct PaperTabView: View {
                     .padding(8)
                     .overlay(
                         Circle()
-                            .stroke(Color.clear, lineWidth: 3)
+                            .stroke(pattern == .Iso ? selected : unselected, lineWidth: 3)
                     )
+                    .onTapGesture {
+                        pattern = .Iso
+                    }
                 Spacer()
             }
             HStack {
@@ -407,8 +423,12 @@ struct PaperTabView: View {
                     .padding(8)
                     .overlay(
                         Circle()
-                            .stroke(Color.blue, lineWidth: 3)
+                            .stroke(background_colour == .white ? selected : unselected, lineWidth: 3)
                     )
+                    .onTapGesture {
+                        pattern_colour = Color.black
+                        background_colour = .white
+                    }
                 Image(systemName:"circle.fill")
                     .resizable()
                     .scaledToFit()
@@ -416,9 +436,13 @@ struct PaperTabView: View {
                     .padding(8)
                     .overlay(
                         Circle()
-                            .stroke(Color.clear, lineWidth: 3)
+                            .stroke(background_colour == .black ? selected : unselected, lineWidth: 3)
                     )
                     .foregroundStyle(.black)
+                    .onTapGesture {
+                        pattern_colour = Color.white
+                        background_colour = .black
+                    }
                 Image(systemName:"circle.fill")
                     .resizable()
                     .scaledToFit()
@@ -426,16 +450,20 @@ struct PaperTabView: View {
                     .padding(8)
                     .overlay(
                         Circle()
-                            .stroke(Color.clear, lineWidth: 3)
+                            .stroke(background_colour == Color(red: 251/255, green: 241/255, blue: 199/255) ? selected : unselected, lineWidth: 3)
                     )
                     .foregroundStyle(Color(red: 251/255, green: 241/255, blue: 199/255))
+                    .onTapGesture {
+                        pattern_colour = Color.black
+                        background_colour = (Color(red: 251/255, green: 241/255, blue: 199/255))
+                    }
                 Spacer()
             }
             Spacer()
             Canvas { context, size in
-                context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(background))
+                context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(background_colour))
                 let pattern_path = generate_pattern(pattern: pattern, size: size, spacing: spacing)
-                context.stroke(pattern_path, with: .color(.black), lineWidth: weight)
+                context.stroke(pattern_path, with: .color(pattern_colour), lineWidth: weight)
             }
                 .frame(width: 200, height: 200)
                 .border(.black)
