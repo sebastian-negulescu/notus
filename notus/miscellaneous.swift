@@ -1,5 +1,5 @@
 //
-//  Utils.swift
+//  miscellaneous.swift
 //  notus
 //
 //  Created by Sebastian Negulescu on 2026-03-14.

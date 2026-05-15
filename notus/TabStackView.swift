@@ -181,8 +181,8 @@ struct ToolsTabView: View {
     }
 }
 
-enum Pattern {
-    case Blank
+enum Pattern: Int {
+    case Blank = 0
     case Line
     case Grid
     case Dot
@@ -325,8 +325,7 @@ struct PaperTabView: View {
     init(tab_offset: UInt) {
         self.tab_offset = tab_offset
     }
-    
-    @State var pattern: Pattern = .Dot
+
     @State var spacing: CGFloat = 50.0
     @State var weight: CGFloat = 1.0
     @State var pattern_colour: Color = .black
@@ -335,72 +334,21 @@ struct PaperTabView: View {
     let selected: Color = .blue
     let unselected: Color = .clear
     
+    let pattern_info = RadioButtonInfo(
+        icon_names: ["circle", "equal.circle", "square.circle", "circle.grid.3x3.circle", "circle.hexagongrid.circle"],
+        dimensions: CGSize(width: 40, height: 40),
+        padding: 8,
+        selected_colour: .blue,
+        selected_weight: 3)
+    @State var pattern_selected = 0
+    
     var content: some View {
         VStack {
             HStack {
                 Text("Pattern")
                     .font(.title2)
                     .frame(minWidth: 100, alignment: .leading)
-                Image(systemName:"circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 40, height: 40)
-                    .padding(8)
-                    .overlay(
-                        Circle()
-                            .stroke(pattern == .Blank ? selected : unselected, lineWidth: 3)
-                    )
-                    .onTapGesture {
-                        pattern = .Blank
-                    }
-                Image(systemName: "equal.circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 40, height: 40)
-                    .padding(8)
-                    .overlay(
-                        Circle()
-                            .stroke(pattern == .Line ? selected : unselected, lineWidth: 3)
-                    )
-                    .onTapGesture {
-                        pattern = .Line
-                    }
-                Image(systemName: "square.circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 40, height: 40)
-                    .padding(8)
-                    .overlay(
-                        Circle()
-                            .stroke(pattern == .Grid ? selected : unselected, lineWidth: 3)
-                    )
-                    .onTapGesture {
-                        pattern = .Grid
-                    }
-                Image(systemName: "circle.grid.3x3.circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 40, height: 40)
-                    .padding(8)
-                    .overlay(
-                        Circle()
-                            .stroke(pattern == .Dot ? selected : unselected, lineWidth: 3)
-                    )
-                    .onTapGesture {
-                        pattern = .Dot
-                    }
-                Image(systemName: "circle.hexagongrid.circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 40, height: 40)
-                    .padding(8)
-                    .overlay(
-                        Circle()
-                            .stroke(pattern == .Iso ? selected : unselected, lineWidth: 3)
-                    )
-                    .onTapGesture {
-                        pattern = .Iso
-                    }
+                RadioButtons(info: pattern_info, selected: $pattern_selected)
                 Spacer()
             }
             HStack {
@@ -468,8 +416,9 @@ struct PaperTabView: View {
             }
             Spacer()
             Canvas { context, size in
+                print("\(pattern_selected)")
                 context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(background_colour))
-                let pattern_path = generate_pattern(pattern: pattern, size: size, spacing: spacing)
+                let pattern_path = generate_pattern(pattern: Pattern(rawValue: pattern_selected)!, size: size, spacing: spacing)
                 context.stroke(pattern_path, with: .color(pattern_colour), lineWidth: weight)
             }
                 .border(.black)
