@@ -328,19 +328,25 @@ struct PaperTabView: View {
 
     @State var spacing: CGFloat = 50.0
     @State var weight: CGFloat = 1.0
-    @State var pattern_colour: Color = .black
-    @State var background_colour: Color = .white
-    
-    let selected: Color = .blue
-    let unselected: Color = .clear
     
     let pattern_info = RadioButtonInfo(
         icon_names: ["circle", "equal.circle", "square.circle", "circle.grid.3x3.circle", "circle.hexagongrid.circle"],
+        icon_colours: [.black, .black, .black, .black, .black],
         dimensions: CGSize(width: 40, height: 40),
         padding: 8,
         selected_colour: .blue,
         selected_weight: 3)
     @State var pattern_selected = 0
+    
+    let colours_info = RadioButtonInfo(
+        icon_names: ["circle", "circle.fill", "circle.fill"],
+        icon_colours: [.black, .black, Color(red: 251/255, green: 241/255, blue: 199/255)],
+        dimensions: CGSize(width: 40, height: 40),
+        padding: 8,
+        selected_colour: .blue,
+        selected_weight: 3)
+    let colours_map = [.white, .black, Color(red: 251/255, green: 241/255, blue: 199/255)]
+    @State var colour_selected = 0
     
     var content: some View {
         VStack {
@@ -371,52 +377,13 @@ struct PaperTabView: View {
                 Text("Colour")
                     .font(.title2)
                     .frame(minWidth: 100, alignment: .leading)
-                Image(systemName:"circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 40, height: 40)
-                    .padding(8)
-                    .overlay(
-                        Circle()
-                            .stroke(background_colour == .white ? selected : unselected, lineWidth: 3)
-                    )
-                    .onTapGesture {
-                        pattern_colour = Color.black
-                        background_colour = .white
-                    }
-                Image(systemName:"circle.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 40, height: 40)
-                    .padding(8)
-                    .overlay(
-                        Circle()
-                            .stroke(background_colour == .black ? selected : unselected, lineWidth: 3)
-                    )
-                    .foregroundStyle(.black)
-                    .onTapGesture {
-                        pattern_colour = Color.white
-                        background_colour = .black
-                    }
-                Image(systemName:"circle.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 40, height: 40)
-                    .padding(8)
-                    .overlay(
-                        Circle()
-                            .stroke(background_colour == Color(red: 251/255, green: 241/255, blue: 199/255) ? selected : unselected, lineWidth: 3)
-                    )
-                    .foregroundStyle(Color(red: 251/255, green: 241/255, blue: 199/255))
-                    .onTapGesture {
-                        pattern_colour = Color.black
-                        background_colour = (Color(red: 251/255, green: 241/255, blue: 199/255))
-                    }
+                RadioButtons(info: colours_info, selected: $colour_selected)
                 Spacer()
             }
             Spacer()
             Canvas { context, size in
-                print("\(pattern_selected)")
+                let background_colour = colours_map[colour_selected]
+                let pattern_colour: Color = background_colour == .black ? .white : .black
                 context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(background_colour))
                 let pattern_path = generate_pattern(pattern: Pattern(rawValue: pattern_selected)!, size: size, spacing: spacing)
                 context.stroke(pattern_path, with: .color(pattern_colour), lineWidth: weight)

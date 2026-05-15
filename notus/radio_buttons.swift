@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RadioButtonInfo {
     let icon_names: [String]
+    let icon_colours: [Color]
     let dimensions: CGSize
     let padding: CGFloat
     let selected_colour: Color
@@ -31,6 +32,7 @@ struct RadioButtons: View {
                         Circle()
                             .stroke(selected == index ? info.selected_colour : .clear, lineWidth: info.selected_weight)
                     )
+                    .foregroundStyle(info.icon_colours[index])
                     .onTapGesture {
                         selected = index
                     }
@@ -41,6 +43,6 @@ struct RadioButtons: View {
 
 #Preview {
     @Previewable @State var selected = 0
-    let info = RadioButtonInfo(icon_names: ["circle", "square", "triangle"], dimensions: CGSize(width: 40, height: 40), padding: 10, selected_colour: .purple, selected_weight: 5)
+    let info = RadioButtonInfo(icon_names: ["circle.fill", "square", "triangle"], icon_colours: [.blue, .orange, .green], dimensions: CGSize(width: 40, height: 40), padding: 10, selected_colour: .purple, selected_weight: 5)
     RadioButtons(info: info, selected: $selected)
 }
