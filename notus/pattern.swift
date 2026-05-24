@@ -15,6 +15,20 @@ enum Pattern: Int {
     case Iso
 }
 
+struct BackgroundInfo {
+    let spacing: CGFloat
+    let weight: CGFloat
+    let background_colour: Color
+    let pattern_colour: Color
+    let pattern: Pattern
+}
+
+func fill_background(_ context: inout GraphicsContext, _ size: CGSize, background_info: BackgroundInfo) -> Void {
+    context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(background_info.background_colour))
+    let pattern_path = generate_pattern(pattern: background_info.pattern, size: size, spacing: background_info.spacing)
+    context.stroke(pattern_path, with: .color(background_info.pattern_colour), lineWidth: background_info.weight)
+}
+
 func generate_pattern(pattern: Pattern, size: CGSize, spacing: CGFloat) -> Path {
     var path = Path()
     let midpoint = CGSize(width: size.width / 2, height: size.height / 2)

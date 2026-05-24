@@ -69,11 +69,12 @@ struct PaperTabView: View {
             }
             Spacer()
             Canvas { context, size in
-                let background_colour = colours_map[colour_selected]
-                let pattern_colour: Color = background_colour == .black ? .white : .black
-                context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(background_colour))
-                let pattern_path = generate_pattern(pattern: Pattern(rawValue: pattern_selected)!, size: size, spacing: spacing)
-                context.stroke(pattern_path, with: .color(pattern_colour), lineWidth: weight)
+                fill_background(&context, size,
+                                background_info: BackgroundInfo(spacing: spacing,
+                                                                weight: weight,
+                                                                background_colour: colours_map[colour_selected],
+                                                                pattern_colour: colours_map[colour_selected] == .black ? .white : .black,
+                                                                pattern: Pattern(rawValue: pattern_selected)!))
             }
                 .border(.black)
             Spacer()
@@ -99,4 +100,8 @@ struct PaperTabView: View {
     var body: some View {
         TabView(tab_offset: self.tab_offset, colour: .blue, content: content)
     }
+}
+
+#Preview {
+    PaperTabView(tab_offset: 0)
 }
