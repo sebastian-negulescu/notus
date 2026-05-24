@@ -1,5 +1,5 @@
 //
-//  pattern.swift
+//  background.swift
 //  notus
 //
 //  Created by Sebastian Negulescu on 2026-05-15.
@@ -23,10 +23,10 @@ struct BackgroundInfo {
     let pattern: Pattern
 }
 
-func fill_background(_ context: inout GraphicsContext, _ size: CGSize, background_info: BackgroundInfo) -> Void {
-    context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(background_info.background_colour))
-    let pattern_path = generate_pattern(pattern: background_info.pattern, size: size, spacing: background_info.spacing)
-    context.stroke(pattern_path, with: .color(background_info.pattern_colour), lineWidth: background_info.weight)
+func fill_background(_ context: inout GraphicsContext, _ size: CGSize, info: BackgroundInfo) -> Void {
+    context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(info.background_colour))
+    let pattern_path = generate_pattern(pattern: info.pattern, size: size, spacing: info.spacing)
+    context.stroke(pattern_path, with: .color(info.pattern_colour), lineWidth: info.weight)
 }
 
 func generate_pattern(pattern: Pattern, size: CGSize, spacing: CGFloat) -> Path {

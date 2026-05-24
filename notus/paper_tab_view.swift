@@ -70,11 +70,11 @@ struct PaperTabView: View {
             Spacer()
             Canvas { context, size in
                 fill_background(&context, size,
-                                background_info: BackgroundInfo(spacing: spacing,
-                                                                weight: weight,
-                                                                background_colour: colours_map[colour_selected],
-                                                                pattern_colour: colours_map[colour_selected] == .black ? .white : .black,
-                                                                pattern: Pattern(rawValue: pattern_selected)!))
+                                info: BackgroundInfo(spacing: spacing,
+                                                     weight: weight,
+                                                     background_colour: colours_map[colour_selected],
+                                                     pattern_colour: colours_map[colour_selected] == .black ? .white : .black,
+                                                     pattern: Pattern(rawValue: pattern_selected)!))
             }
                 .border(.black)
             Spacer()

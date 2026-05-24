@@ -11,11 +11,7 @@ import PencilKit
 
 
 struct DeskView: View {
-    var page: PageView
-    
-    init() {
-        self.page = PageView(drawing: PKDrawing(), background: BackgroundInfo(spacing: 30, weight: 0.1, background_colour: .white, pattern_colour: .black, pattern: .Iso))
-    }
+    let page = PageView(info: PageInfo(drawing: PKDrawing(), background: BackgroundInfo(spacing: 30, weight: 3, background_colour: .white, pattern_colour: .black, pattern: .Iso)))
     
     var body: some View {
         ZStack(alignment: .topTrailing) {

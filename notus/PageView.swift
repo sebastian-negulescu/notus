@@ -9,19 +9,19 @@ import SwiftUI
 import PencilKit
 
 struct PageView: View {
-    let wrapped_drawing: DrawingView
-    let background_info: BackgroundInfo
+    let drawing: DrawingView
+    var background: BackgroundInfo
     
-    init(drawing: PKDrawing, background: BackgroundInfo) {
-        self.wrapped_drawing = DrawingView(drawing: drawing)
-        self.background_info = background
+    init(info: PageInfo) {
+        self.drawing = DrawingView(drawing: info.drawing)
+        self.background = info.background
     }
     
     var body: some View {
         ZStack {
-            wrapped_drawing
+            drawing
             Canvas { context, size in
-                fill_background(&context, size, background_info: background_info)
+                fill_background(&context, size, info: background)
             }
         }
     }
@@ -50,6 +50,5 @@ struct DrawingView: UIViewRepresentable {
 }
 
 #Preview {
-    PageView(drawing: PKDrawing(),
-             background: BackgroundInfo(spacing: 30, weight: 3, background_colour: .white, pattern_colour: .black, pattern: .Iso))
+    PageView(info: PageInfo(drawing: PKDrawing(), background: BackgroundInfo(spacing: 30, weight: 3, background_colour: .white, pattern_colour: .black, pattern: .Iso)))
 }
