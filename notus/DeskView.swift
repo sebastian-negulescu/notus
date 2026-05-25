@@ -11,12 +11,15 @@ import PencilKit
 
 
 struct DeskView: View {
-    let page = PageView(info: PageInfo(drawing: PKDrawing(), background: BackgroundInfo(spacing: 30, weight: 3, background_colour: .white, pattern_colour: .black, pattern: .Iso)))
-    
+    @State var background = BackgroundInfo(spacing: 30,
+                                           weight: 1,
+                                           raw_colour: 0,
+                                           raw_pattern: 0)
+
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            page
-            TabStackView()
+            PageView(drawing: PKDrawing(), background: $background)
+            TabStackView(background: $background)
         }
     }
 }

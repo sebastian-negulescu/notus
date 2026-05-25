@@ -10,11 +10,11 @@ import PencilKit
 
 struct PageView: View {
     let drawing: DrawingView
-    var background: BackgroundInfo
+    @Binding var background: BackgroundInfo
     
-    init(info: PageInfo) {
-        self.drawing = DrawingView(drawing: info.drawing)
-        self.background = info.background
+    init(drawing: PKDrawing, background: Binding<BackgroundInfo>) {
+        self.drawing = DrawingView(drawing: drawing)
+        self._background = background
     }
     
     var body: some View {
@@ -50,5 +50,9 @@ struct DrawingView: UIViewRepresentable {
 }
 
 #Preview {
-    PageView(info: PageInfo(drawing: PKDrawing(), background: BackgroundInfo(spacing: 30, weight: 3, background_colour: .white, pattern_colour: .black, pattern: .Iso)))
+    @Previewable @State var background = BackgroundInfo(spacing: 30,
+                                           weight: 1,
+                                           raw_colour: 0,
+                                           raw_pattern: 0)
+    PageView(drawing: PKDrawing(), background: $background)
 }

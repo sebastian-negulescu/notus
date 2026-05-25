@@ -9,13 +9,8 @@ import SwiftUI
 
 struct PaperTabView: View {
     let tab_offset: UInt
-    init(tab_offset: UInt) {
-        self.tab_offset = tab_offset
-    }
+    @Binding var background: BackgroundInfo
 
-    @State var spacing: CGFloat = 50.0
-    @State var weight: CGFloat = 1.0
-    
     let pattern_info = RadioButtonInfo(
         icon_names: ["circle", "equal.circle", "square.circle", "circle.grid.3x3.circle", "circle.hexagongrid.circle"],
         icon_colours: [.black, .black, .black, .black, .black],
@@ -32,7 +27,7 @@ struct PaperTabView: View {
         padding: 8,
         selected_colour: .blue,
         selected_weight: 3)
-    let colours_map = [.white, .black, Color(red: 251/255, green: 241/255, blue: 199/255)]
+    
     @State var colour_selected = 0
     
     var content: some View {
@@ -41,14 +36,14 @@ struct PaperTabView: View {
                 Text("Pattern")
                     .font(.title2)
                     .frame(minWidth: 100, alignment: .leading)
-                RadioButtons(info: pattern_info, selected: $pattern_selected)
+                RadioButtons(info: pattern_info, selected: $background.raw_pattern)
                 Spacer()
             }
             HStack {
                 Text("Spacing")
                     .font(.title2)
                     .frame(minWidth: 100, alignment: .leading)
-                Slider(value: $spacing, in: 25...75)
+                Slider(value: $background.spacing, in: 25...75)
                     .frame(maxWidth: 300)
                 Spacer()
             }
@@ -56,7 +51,7 @@ struct PaperTabView: View {
                 Text("Weight")
                     .font(.title2)
                     .frame(minWidth: 100, alignment: .leading)
-                Slider(value: $weight, in: 0.1...10)
+                Slider(value: $background.weight, in: 0.1...10)
                     .frame(maxWidth: 300)
                 Spacer()
             }
@@ -64,17 +59,13 @@ struct PaperTabView: View {
                 Text("Colour")
                     .font(.title2)
                     .frame(minWidth: 100, alignment: .leading)
-                RadioButtons(info: colours_info, selected: $colour_selected)
+                RadioButtons(info: colours_info, selected: $background.raw_colour)
                 Spacer()
             }
             Spacer()
             Canvas { context, size in
                 fill_background(&context, size,
-                                info: BackgroundInfo(spacing: spacing,
-                                                     weight: weight,
-                                                     background_colour: colours_map[colour_selected],
-                                                     pattern_colour: colours_map[colour_selected] == .black ? .white : .black,
-                                                     pattern: Pattern(rawValue: pattern_selected)!))
+                                info: background)
             }
                 .border(.black)
             Spacer()
@@ -103,5 +94,9 @@ struct PaperTabView: View {
 }
 
 #Preview {
-    PaperTabView(tab_offset: 0)
+    @Previewable @State var background = BackgroundInfo(spacing: 1,
+                                           weight: 1,
+                                           raw_colour: 0,
+                                           raw_pattern: 0)
+    PaperTabView(tab_offset: 0, background: $background)
 }

@@ -16,17 +16,22 @@ enum Pattern: Int {
 }
 
 struct BackgroundInfo {
-    let spacing: CGFloat
-    let weight: CGFloat
-    let background_colour: Color
-    let pattern_colour: Color
-    let pattern: Pattern
+    var spacing: CGFloat
+    var weight: CGFloat
+    var raw_colour: Int
+    var raw_pattern: Int
 }
 
 func fill_background(_ context: inout GraphicsContext, _ size: CGSize, info: BackgroundInfo) -> Void {
-    context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(info.background_colour))
-    let pattern_path = generate_pattern(pattern: info.pattern, size: size, spacing: info.spacing)
-    context.stroke(pattern_path, with: .color(info.pattern_colour), lineWidth: info.weight)
+    let colours_map = [.white, .black, Color(red: 251/255, green: 241/255, blue: 199/255)]
+    let background_colour = colours_map[info.raw_colour]
+    let pattern_colour = Color.white
+    let pattern = Pattern(rawValue: info.raw_pattern)!
+    
+    
+    context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(background_colour))
+    let pattern_path = generate_pattern(pattern: pattern, size: size, spacing: info.spacing)
+    context.stroke(pattern_path, with: .color(pattern_colour), lineWidth: info.weight)
 }
 
 func generate_pattern(pattern: Pattern, size: CGSize, spacing: CGFloat) -> Path {
