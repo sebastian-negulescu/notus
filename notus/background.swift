@@ -25,7 +25,7 @@ struct BackgroundInfo {
 func fill_background(_ context: inout GraphicsContext, _ size: CGSize, info: BackgroundInfo) -> Void {
     let colours_map = [.white, .black, Color(red: 251/255, green: 241/255, blue: 199/255)]
     let background_colour = colours_map[info.raw_colour]
-    let pattern_colour = Color.white
+    let pattern_colour = background_colour.suggestedTextColour
     let pattern = Pattern(rawValue: info.raw_pattern)!
     
     
