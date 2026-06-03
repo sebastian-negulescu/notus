@@ -10,6 +10,13 @@ import SwiftUI
 struct PaperTabView: View {
     let tab_offset: UInt
     @Binding var background: BackgroundInfo
+    @State var preview_background: BackgroundInfo
+    
+    init(tab_offset: UInt, background: Binding<BackgroundInfo>) {
+        self.tab_offset = tab_offset
+        self._background = background
+        self.preview_background = background.wrappedValue
+    }
 
     let pattern_info = RadioButtonInfo(
         icon_names: ["circle", "equal.circle", "square.circle", "circle.grid.3x3.circle", "circle.hexagongrid.circle"],
@@ -36,14 +43,14 @@ struct PaperTabView: View {
                 Text("Pattern")
                     .font(.title2)
                     .frame(minWidth: 100, alignment: .leading)
-                RadioButtons(info: pattern_info, selected: $background.raw_pattern)
+                RadioButtons(info: pattern_info, selected: $preview_background.raw_pattern)
                 Spacer()
             }
             HStack {
                 Text("Spacing")
                     .font(.title2)
                     .frame(minWidth: 100, alignment: .leading)
-                Slider(value: $background.spacing, in: 25...75)
+                Slider(value: $preview_background.spacing, in: 25...75)
                     .frame(maxWidth: 300)
                 Spacer()
             }
@@ -51,7 +58,7 @@ struct PaperTabView: View {
                 Text("Weight")
                     .font(.title2)
                     .frame(minWidth: 100, alignment: .leading)
-                Slider(value: $background.weight, in: 0.1...10)
+                Slider(value: $preview_background.weight, in: 0.1...10)
                     .frame(maxWidth: 300)
                 Spacer()
             }
@@ -59,26 +66,32 @@ struct PaperTabView: View {
                 Text("Colour")
                     .font(.title2)
                     .frame(minWidth: 100, alignment: .leading)
-                RadioButtons(info: colours_info, selected: $background.raw_colour)
+                RadioButtons(info: colours_info, selected: $preview_background.raw_colour)
                 Spacer()
             }
             Spacer()
             Canvas { context, size in
                 fill_background(&context, size,
-                                info: background)
+                                info: preview_background)
             }
                 .border(.black)
             Spacer()
             HStack {
-                Button(action: do_nothing) {
+                Button(action: {
+                    background = preview_background
+                }) {
                     Text("Apply current")
                 }
                 .buttonStyle(.bordered)
-                Button(action: do_nothing) {
+                Button(action: {
+                    background = preview_background
+                }) {
                     Text("Apply all")
                 }
                 .buttonStyle(.bordered)
-                Button(action: do_nothing) {
+                Button(action: {
+                    preview_background = background
+                }) {
                     Text("Discard")
                     .foregroundStyle(.red)
                 }
