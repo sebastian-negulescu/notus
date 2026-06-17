@@ -1,12 +1,28 @@
 # Planning
 
-## List
+### Background
 
-- [x] Disconnect the background from the preview background, make buttons set one to the other.
-- [x] Add an extension to `Color` to determine if we should use white or black lines.
-- [ ] Add a `rows` option to radio button view so we can make pencil and eraser radio button options.
-- [ ] Make `Tool` class and list that contains active tools and the tool properties.
-- [ ] Add proper colours and a colour picker to the pen tool properties.
 - [ ] Convert background measurements into millimetres.
-- [ ] Change pencil thickness to a slider of millimetres.
-- [ ] Change eraser thickness to a slider of millimetres.
+- [ ] Show millimetres beside slider for background.
+
+### Tools
+
+- [ ] Create a base tool class what we can compose with different properties.
+
+#### Pencil
+
+- [ ] Reduce number of colours into one row and use `RadioButtons` view.
+- [ ] Use a slider for the stroke weight (or pencil thickness?).
+- [ ] Show the weight of the stroke in mm.
+- [ ] Add colour option to set a custom colour, or edit one of the preset colours.
+
+#### Eraser
+
+- [ ] Make a slider for the diameter.
+- [ ] Show the diameter of the eraser in mm.
+- [ ] Add a circle showing how big the eraser is.
+- [ ] Toggle between stroke eraser and pixel eraser, disable pixel eraser slider if toggle is set.
+
+### Page
+
+To be brainstormed when we are done the tools...
