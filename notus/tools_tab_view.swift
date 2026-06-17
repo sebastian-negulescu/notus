@@ -8,7 +8,18 @@
 import SwiftUI
 
 struct PencilToolView: View {
-    @State var stroke_weight = 50.0
+    
+    let colours_info = RadioButtonInfo(
+        icon_names: ["circle.fill", "circle.fill", "circle.fill", "circle.fill"],
+        icon_colours: [.black, .red, .green, .blue],
+        dimensions: CGSize(width: 20, height: 20),
+        padding: 4,
+        selected_colour: .blue,
+        selected_weight: 3)
+    @State var colour_selected = 0
+    
+    @State var stroke_weight = 0.5
+    
     var body: some View {
         VStack {
             Image(systemName: "pencil.and.scribble")
@@ -18,46 +29,30 @@ struct PencilToolView: View {
                 .padding(.bottom, 20)
             
             Text("Colour")
-            HStack {
-                Image(systemName: "circle.fill")
-                Image(systemName: "circle.circle.fill")
-                Image(systemName: "circle.fill")
-            }
-            .padding(1)
-            HStack {
-                Image(systemName: "circle.fill")
-                Image(systemName: "circle.fill")
-                Image(systemName: "plus.circle")
-            }
-            .padding(1)
+            RadioButtons(info: colours_info, selected: $colour_selected)
             
             Spacer()
             
             Text("Weight")
             HStack {
-                Image(systemName: "scribble")
-                    .fontWeight(.ultraLight)
-                Image(systemName: "scribble")
-                    .fontWeight(.light)
-                Image(systemName: "scribble")
-                    .fontWeight(.medium)
-                Image(systemName: "scribble")
-                    .fontWeight(.bold)
-                Image(systemName: "scribble")
-                    .fontWeight(.black)
+                Slider(value: $stroke_weight, in: 0.1...1, step: 0.1)
+                Text("\(stroke_weight.formatted(.number.precision(.fractionLength(1))))mm")
+                    .monospaced()
             }
-            .padding(1)
             
             Spacer()
         }
         .padding(20)
-        .frame(width: 160, height: 300)
+        .frame(width: 180, height: 300)
         .overlay(RoundedRectangle(cornerRadius: 10)
             .stroke(.black, lineWidth: 2))
     }
 }
 
 struct EraserToolView: View {
+    
+    @State var is_pixel: Bool = false
+    
     var body: some View {
         VStack {
             Image(systemName: "eraser")
@@ -65,7 +60,7 @@ struct EraserToolView: View {
                 .scaledToFit()
                 .frame(width: 80, height: 80)
                 .padding(.bottom, 20)
-            Text("Size")
+            Text("Type")
             HStack {
                 Image(systemName: "circle")
                     .resizable()
@@ -89,7 +84,7 @@ struct EraserToolView: View {
             
         }
         .padding(20)
-        .frame(width: 160, height: 300)
+        .frame(width: 180, height: 300)
         .overlay(RoundedRectangle(cornerRadius: 10)
             .stroke(.black, lineWidth: 2))
     }
@@ -126,4 +121,9 @@ struct ToolsTabView: View {
     var body: some View {
         TabView(tab_offset: self.tab_offset, colour: .green, content: content)
     }
+}
+
+#Preview {
+    ToolsTabView(tab_offset: 0)
+        .offset(x: -500)
 }

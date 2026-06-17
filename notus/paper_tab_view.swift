@@ -34,7 +34,6 @@ struct PaperTabView: View {
         padding: 8,
         selected_colour: .blue,
         selected_weight: 3)
-    
     @State var colour_selected = 0
     
     var content: some View {
@@ -112,4 +111,5 @@ struct PaperTabView: View {
                                            raw_colour: 0,
                                            raw_pattern: 0)
     PaperTabView(tab_offset: 0, background: $background)
+        .offset(x: -500)
 }
