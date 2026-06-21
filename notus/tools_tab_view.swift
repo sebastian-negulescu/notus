@@ -22,7 +22,7 @@ struct PencilToolView: View {
     
     var body: some View {
         VStack {
-            Image(systemName: "pencil.and.scribble")
+            Image(systemName: "pencil.tip")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 80, height: 80)
@@ -51,7 +51,16 @@ struct PencilToolView: View {
 
 struct EraserToolView: View {
     
-    @State var is_pixel: Bool = false
+    let type_info = RadioButtonInfo(
+        icon_names: ["circle", "x.circle"],
+        icon_colours: [.black, .black],
+        dimensions: CGSize(width: 20, height: 20),
+        padding: 4,
+        selected_colour: .blue,
+        selected_weight: 3)
+    @State var type_selected = 0
+
+    @State var diameter = 1.0
     
     var body: some View {
         VStack {
@@ -60,25 +69,16 @@ struct EraserToolView: View {
                 .scaledToFit()
                 .frame(width: 80, height: 80)
                 .padding(.bottom, 20)
-            Text("Type")
-            HStack {
-                Image(systemName: "circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 10, height: 10)
-                Image(systemName: "circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 12, height: 12)
-                Image(systemName: "circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 14, height: 14)
-                Image(systemName: "circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 16, height: 16)
-                Image(systemName: "x.square.fill")
+            VStack {
+                Text("Type: \(type_selected == 0 ? "Pixel" : "Stroke")")
+                RadioButtons(info: type_info, selected: $type_selected)
+                Text("Diameter")
+                HStack {
+                    Slider(value: $diameter, in: 0.1...5, step: 0.1)
+                        .disabled(type_selected != 0)
+                    Text("\(diameter.formatted(.number.precision(.fractionLength(1))))cm")
+                        .monospaced()
+                }
             }
             Spacer()
             
