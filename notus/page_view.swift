@@ -10,19 +10,14 @@ import PencilKit
 
 struct PageView: View {
     let drawing: DrawingView
-    @Binding var background: BackgroundInfo
     
-    init(drawing: PKDrawing, background: Binding<BackgroundInfo>) {
-        self.drawing = DrawingView(drawing: drawing)
-        self._background = background
+    init(page: Page) {
+        self.drawing = DrawingView(drawing: page.drawing)
     }
     
     var body: some View {
         ZStack {
             drawing
-            Canvas { context, size in
-                fill_background(&context, size, info: background)
-            }
         }
     }
 }
@@ -33,9 +28,9 @@ struct DrawingView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> PKCanvasView {
         canvas.drawing = drawing
-        canvas.drawingPolicy = .pencilOnly
+        canvas.drawingPolicy = .anyInput
         canvas.tool = PKInkingTool(.pen, color: .black, width: 10)
-        canvas.becomeFirstResponder()
+        // TODO: set up delegate to save drawing as it's stroked
         
         return canvas
     }
@@ -50,9 +45,5 @@ struct DrawingView: UIViewRepresentable {
 }
 
 #Preview {
-    @Previewable @State var background = BackgroundInfo(spacing: 30,
-                                           weight: 1,
-                                           raw_colour: 0,
-                                           raw_pattern: 0)
-    PageView(drawing: PKDrawing(), background: $background)
+    PageView(page: Page(name: "", id: UUID(), drawing: PKDrawing()))
 }
