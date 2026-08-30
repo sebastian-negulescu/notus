@@ -11,13 +11,14 @@ import PencilKit
 @main
 struct NotusApp: App {
     @State var openBook: Book? = nil
+    let library = Library()
     
     var body: some Scene {
         WindowGroup {
             if openBook == nil {
-                LibraryView(book: $openBook)
+                LibraryView(book: $openBook, library: library)
             } else {
-                DeskView(book: openBook!)
+                DeskView(book: openBook!, library: library)
             }
         }
     }

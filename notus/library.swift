@@ -16,7 +16,7 @@ protocol IdentifiableResource: Identifiable {
 struct Page: IdentifiableResource, Codable {
     var name: String
     let id: UUID
-    let drawing: PKDrawing
+    var drawing: PKDrawing
     
     static func newPage() -> Page {
         return Page(name: "New Page", id: UUID(), drawing: PKDrawing())
@@ -36,19 +36,25 @@ struct Book: IdentifiableResource, Codable {
 class Library {
     private let fileManager = FileManager.default
     
-    func checkout(id: UUID) throws -> Book {
+    func checkOut(id: UUID) throws -> Book {
         let url = URL.documentsDirectory.appendingPathComponent(id.uuidString)
         let data = try Data(contentsOf: url)
         let decoder = PropertyListDecoder()
         return try decoder.decode(Book.self, from: data)
     }
     
-    func checkin(book: Book) throws {
+    func checkIn(book: Book) throws {
         let url = URL.documentsDirectory.appendingPathComponent(book.id.uuidString)
         let encoder = PropertyListEncoder()
         encoder.outputFormat = .binary
         let data = try encoder.encode(book)
         try data.write(to: url, options: .atomic)
+    }
+    
+    func updatePage(id: UUID, pageNumber: Int, drawing: PKDrawing) throws {
+        var book = try checkOut(id: id)
+        book.pages[pageNumber].drawing = drawing
+        try checkIn(book: book)
     }
     
     func catalog() -> [URL] {

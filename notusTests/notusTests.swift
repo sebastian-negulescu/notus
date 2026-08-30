@@ -6,12 +6,14 @@
 //
 
 import Testing
+import PencilKit
 @testable import notus
 
-struct notusTests {
-
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+@Suite("library") struct notusLibraryTests {
+    @Test func testBook() throws {
+        let book = Book(name: "test", id: UUID(), pages: [])
+        let library = Library()
+        try library.putBook(book: book)
+        let _ = try library.getBook(id: book.id)
     }
-
 }
