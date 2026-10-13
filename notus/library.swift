@@ -17,9 +17,10 @@ struct Page: IdentifiableResource, Codable {
     var name: String
     let id: UUID
     var drawing: PKDrawing
+    var background: Int
     
     static func newPage() -> Page {
-        return Page(name: "New Page", id: UUID(), drawing: PKDrawing())
+        return Page(name: "New Page", id: UUID(), drawing: PKDrawing(), background: 0)
     }
 }
 
@@ -27,9 +28,15 @@ struct Book: IdentifiableResource, Codable {
     var name: String
     let id: UUID
     var pages: [Page]
+    var openPage: Int
     
     static func newBook(num_pages: Int) -> Book {
-        return Book(name: "New Book", id: UUID(), pages: (0..<num_pages).map{_ in Page.newPage()})
+        return Book(
+            name: "New Book",
+            id: UUID(),
+            pages: (0..<num_pages).map{_ in Page.newPage()},
+            openPage: 0
+        )
     }
 }
 
@@ -54,6 +61,7 @@ class Library {
     func updatePage(id: UUID, pageNumber: Int, drawing: PKDrawing) throws {
         var book = try checkOut(id: id)
         book.pages[pageNumber].drawing = drawing
+        book.openPage = pageNumber
         try checkIn(book: book)
     }
     

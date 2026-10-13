@@ -55,6 +55,6 @@ struct InfoTabView: View {
     }
     
     var body: some View {
-        TabView(tab_offset: self.tab_offset, colour: .red, content: content)
+        TabViewLocal(tab_offset: self.tab_offset, colour: .red, content: content)
     }
 }

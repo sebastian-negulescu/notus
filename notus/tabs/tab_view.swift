@@ -8,7 +8,7 @@
 import SwiftUI
 import PencilKit
 
-struct TabView<Content: View>: View {
+struct TabViewLocal<Content: View>: View {
     let y_offset: CGFloat
     @State var x_offset: CGFloat = 0
     @State var intermediate_offset: CGFloat = 0
@@ -78,5 +78,5 @@ struct TabView<Content: View>: View {
 }
 
 #Preview {
-    TabView(tab_offset: 0, colour: .green, content: Text("hello, world!"))
+    TabViewLocal(tab_offset: 0, colour: .green, content: Text("hello, world!"))
 }

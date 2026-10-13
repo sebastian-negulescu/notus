@@ -101,7 +101,7 @@ struct PaperTabView: View {
     }
     
     var body: some View {
-        TabView(tab_offset: self.tab_offset, colour: .blue, content: content)
+        TabViewLocal(tab_offset: self.tab_offset, colour: .blue, content: content)
     }
 }
 
